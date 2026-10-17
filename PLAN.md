@@ -190,7 +190,8 @@ D:\Lobstermania\
   - Normal spins roll a little longer than before (about 1.8 s instead of 1.6 s).
   - **Music:** the bonus shanty now has drums, squeezebox chords and a key change on every second time round. Music is louder by default and has its own volume slider in Settings.
   - **Big wins:** the title grows during the count-up (BIG, then HUGE, then MEGA WIN), each step with a fanfare and a bigger shower of spinning gold coins (`js/fx.js`). Coins also rain on Total Bonus boards and progressive wins.
-  - **Autoplay** (Settings, or the A key): 10–250 spins, optionally stopping when a bonus starts. PLAY or space stops it.
+  - **Autoplay** (Settings, or the A key): 10–250 spins, optionally stopping after a bonus. PLAY or space stops it.
+    - Bonuses play themselves during autoplay. `LM.Bonus.autoClick` makes a random pick after a short pause on every pick screen: Pick a Bonus, Pick a Lobster, buoys, the rules board and the wheel spin. Stopping autoplay mid-bonus hands the remaining picks back.
   - **Full screen:** Settings or the F key.
 
 ### Phase 1: Playable base game (the core loop)

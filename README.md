@@ -25,7 +25,7 @@ That writes `dist/lobstermania.html`, which works on its own on any device.
 - 5 reels with 720 ways to win, wilds and King Stacks
 - **Buoy Bonus**: Classic or Free Games
 - **Big Wheel Bonus** with the Mother Lode and Full Trap progressives
-- Bonus teases, synthesized sound and music, big-win coin showers, autoplay
+- Bonus teases, synthesized sound and music, big-win coin showers, autoplay (bonuses play themselves too)
 - Five generosity levels in Settings
 
 `PLAN.md` has the full background, the rules found online and the build notes.

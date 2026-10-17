@@ -401,7 +401,11 @@
       this.root.classList.add("ready");
       return new Promise((resolve) => {
         let down = null;
+        const start = performance.now();
+        // autoplay: give the wheel a shove by itself after a moment
+        const auto = setInterval(() => LM.autoplay.active() && performance.now() - start > 1500 && done(0.6), 200);
         const done = (power) => {
+          clearInterval(auto);
           this.root.classList.remove("ready");
           this.root.onpointerdown = this.root.onpointermove = this.root.onpointerup = null;
           removeEventListener("keydown", onKey, true);

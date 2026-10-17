@@ -4,7 +4,7 @@
    3x/5x multiplier or matching King Stacks on the next game, or extra free games.
    The whole outcome is rolled in advance by LM.engine.playFreeGames; this file only shows it. */
 (function () {
-  const { el, img, sleep, BoatScene, frames, totalBoard } = LM.Bonus;
+  const { el, img, sleep, BoatScene, frames, totalBoard, autoClick } = LM.Bonus;
   const F = "assets/freegames/";
   const A = "assets/bonus/";
   const FPS = 12;
@@ -172,6 +172,7 @@
         }
       };
       s.onclick = done;
+      autoClick(() => [s], 3000); // autoplay: read the rules for a moment, then go
       addEventListener("keydown", onKey, true);
       setTimeout(done, 12000);
     });

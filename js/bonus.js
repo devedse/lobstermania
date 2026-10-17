@@ -19,6 +19,22 @@
     return e;
   }
 
+  /**
+   * Autoplay: when it's on, click one of `getTargets()` at random after `delay` ms, so the
+   * bonus plays itself. Only targets that still have a click handler count, so it stops by
+   * itself once the player picks. Turning autoplay off mid-bonus hands the picks back.
+   */
+  function autoClick(getTargets, delay = 1300) {
+    const start = performance.now();
+    const timer = setInterval(() => {
+      const list = getTargets().filter((e) => e && e.onclick && e.isConnected);
+      if (!list.length) return clearInterval(timer);
+      if (!LM.autoplay.active() || performance.now() - start < delay) return;
+      clearInterval(timer);
+      list[Math.floor(Math.random() * list.length)].click();
+    }, 200);
+  }
+
   function img(src, cls, parent) {
     const i = el("img", cls, parent);
     i.src = LM.url(src);
@@ -109,6 +125,7 @@
             resolve(i);
           };
         });
+        autoClick(() => this.buoys.filter((b) => !b.picked).map((b) => b.spot));
       });
     }
 
@@ -165,6 +182,7 @@
         }
         o.btn = b;
       });
+      autoClick(() => opts.map((o) => o.btn), 1800);
     });
     opts.forEach((o) => o.btn.classList.add(o.key === choice ? "chosen" : "not-chosen"));
     LM.sound.play("reveal");
@@ -187,6 +205,7 @@
           resolve(i);
         };
       });
+      autoClick(() => [...s.querySelectorAll(".pick-lobster")]);
     });
     s.querySelectorAll("button").forEach((b) => b.remove());
     // Reveal: picked lobster lights up, the others go grey and show what they had.
@@ -317,5 +336,5 @@
     return won;
   }
 
-  LM.Bonus = { run, preload, BoatScene, frames, totalBoard, screen, el, img, sleep };
+  LM.Bonus = { run, preload, BoatScene, frames, totalBoard, screen, el, img, sleep, autoClick };
 })();

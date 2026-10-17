@@ -12,7 +12,7 @@
     turbo: false,
     testMode: false,
     sound: { on: true, volume: 0.7, music: true, musicVolume: 0.6 },
-    auto: { spins: 25, stopOnBonus: true },
+    auto: { spins: 25, stopAfterBonus: false },
     startingCredits: C.startingCredits,
     motherLode: C.progressives.motherLode.seed,
     fullTrap: C.progressives.fullTrap.seed,
@@ -50,7 +50,9 @@
   let busy = false; // reels spinning or bonus running
   let rolling = null; // active win rollup, so a click can finish it
   let winCycle = null;
-  let autoLeft = 0; // autoplay spins still to go (0 = off)
+  let autoLeft = 0; // autoplay spins still to go
+  let autoRunning = false; // autoplay on (also during the bonus of its last spin)
+  LM.autoplay = { active: () => autoRunning };
 
   // ---------- helpers ----------
   const money = (credits) => "$" + ((credits * C.centsPerCredit) / 100).toFixed(2);
@@ -232,8 +234,9 @@
 
   // ---------- autoplay ----------
   async function startAuto(n = state.auto.spins) {
-    if (busy || autoLeft) return;
+    if (busy || autoRunning) return;
     autoLeft = n;
+    autoRunning = true;
     LM.sound.play("click");
     while (autoLeft > 0) {
       if (!$("modal").hidden) break;
@@ -244,7 +247,7 @@
       autoLeft--;
       const bonusesBefore = state.stats.bonuses + state.stats.wheels;
       await spin(true);
-      if (state.auto.stopOnBonus && state.stats.bonuses + state.stats.wheels > bonusesBefore) break;
+      if (state.auto.stopAfterBonus && state.stats.bonuses + state.stats.wheels > bonusesBefore) break;
       renderAuto();
       if (autoLeft > 0) await sleep(state.turbo ? 250 : 500);
       // a quick press during the pause also finishes a count-up first
@@ -255,19 +258,20 @@
 
   function stopAuto() {
     autoLeft = 0;
+    autoRunning = false;
     renderAuto();
   }
 
   function renderAuto() {
     const btn = $("btn-spin");
     btn.classList.toggle("auto", autoLeft > 0);
-    if (!busy) btn.textContent = autoLeft > 0 ? `AUTO ${autoLeft}` : "PLAY";
+    if (!busy || btn.textContent.startsWith("AUTO")) btn.textContent = autoLeft > 0 ? `AUTO ${autoLeft}` : "PLAY";
   }
 
   // ---------- spinning ----------
   async function spin(fromAuto = false) {
-    if (autoLeft && fromAuto !== true) {
-      // PLAY / space during autoplay stops it (and hurries the reels)
+    if (autoRunning && fromAuto !== true) {
+      // PLAY / space during autoplay stops it (and hurries the reels, or hands a bonus back)
       stopAuto();
       if (busy) reels.hurry();
       return;
@@ -596,10 +600,11 @@
          <select id="auto-spins">${[10, 25, 50, 100, 250]
            .map((n) => `<option value="${n}" ${n === state.auto.spins ? "selected" : ""}>${n} spins</option>`)
            .join("")}</select>
-         <label><input type="checkbox" id="auto-stop" ${state.auto.stopOnBonus ? "checked" : ""}> Stop when a bonus starts</label>
+         <label><input type="checkbox" id="auto-stop" ${state.auto.stopAfterBonus ? "checked" : ""}> Stop after a bonus</label>
          <button class="plain" id="auto-go">Start autoplay</button>
        </div>
-       <p class="note">Press PLAY or the space bar to stop it. Shortcut: A key starts autoplay. Bonuses still wait for her picks.</p>
+       <p class="note">Bonuses play themselves too, with random picks. Press PLAY or the space bar to stop autoplay;
+       during a bonus that hands the remaining picks back to her. Shortcut: A key starts autoplay.</p>
 
        <h3>Screen</h3>
        <div class="row"><button class="plain" id="fullscreen">Full screen on/off</button> <span class="note">Shortcut: F key</span></div>
@@ -676,7 +681,7 @@
           save();
         };
         $("auto-stop").onchange = (e) => {
-          state.auto.stopOnBonus = e.target.checked;
+          state.auto.stopAfterBonus = e.target.checked;
           save();
         };
         $("auto-go").onclick = () => {
@@ -769,7 +774,7 @@
         e.preventDefault();
         spin();
       } else if (e.key === "a" || e.key === "A") {
-        if (autoLeft) stopAuto();
+        if (autoRunning) stopAuto();
         else startAuto();
       } else if (e.key === "f" || e.key === "F") {
         toggleFullscreen();
