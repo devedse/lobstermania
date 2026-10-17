@@ -29,3 +29,10 @@ That writes `dist/lobstermania.html`, which works on its own on any device.
 - Five generosity levels in Settings
 
 `PLAN.md` has the full background, the rules found online and the build notes.
+
+## Autoplay regression checks
+
+Run `npm ci` and `npx playwright install chromium`, then start
+`python3 -m http.server 8765` in the repository. In another terminal, run
+`npm test`. The browser checks Classic, Free Games, the Big Wheel, chained
+Buoy Bonuses, stopping after a bonus, continuing autoplay, and manual takeover.

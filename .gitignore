@@ -4,3 +4,4 @@ reference/
 dist/
 __pycache__/
 .claude/
+node_modules/

@@ -159,7 +159,13 @@
     const s = el("div", "bonus-screen fg-rules", ctx.layer);
     img(F + "fg_rules.jpg", "bg", s);
     await new Promise((resolve) => {
+      let timer;
+      let finished = false;
       const done = () => {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        s.onclick = null;
         LM.sound.play("click");
         removeEventListener("keydown", onKey, true);
         resolve();
@@ -174,7 +180,7 @@
       s.onclick = done;
       autoClick(() => [s], 3000); // autoplay: read the rules for a moment, then go
       addEventListener("keydown", onKey, true);
-      setTimeout(done, 12000);
+      timer = setTimeout(done, 12000);
     });
     s.remove();
   }
