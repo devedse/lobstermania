@@ -1,0 +1,6 @@
+# Video frames cut from the promo and gameplay videos (256 MB); used only by the tools/extract_*.py scripts
+reference/
+# Single-file build; rebuild with: python tools/build_single.py
+dist/
+__pycache__/
+.claude/

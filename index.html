@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lobstermania 3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Roboto+Condensed:wght@700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="side side-left"></div>
+  <div class="side side-right"></div>
+
+  <!-- The machine: 963 x 1113 design pixels, scaled to fit the window -->
+  <div id="stage">
+    <!-- Top screen: paytable with live progressive meters -->
+    <div id="top-screen">
+      <img id="top-img" src="assets/bg/top.jpg" alt="">
+      <div class="meter" id="meter-mother" data-label="MOTHER LODE LEVEL"></div>
+      <div class="meter" id="meter-trap" data-label="FULL TRAP LEVEL"></div>
+    </div>
+
+    <!-- Bottom screen: dock background, five reels, win highlights, message line -->
+    <div id="bottom-screen">
+      <img class="bg" id="base-img" src="assets/bg/base.jpg" alt="">
+      <div id="reels"></div>
+      <div id="cells"></div>
+      <div id="message"></div>
+      <div id="bonus-layer"></div>
+      <div id="overlay"></div>
+    </div>
+
+    <!-- Button bar, styled after the machine's own -->
+    <div id="bar">
+      <button id="btn-menu" class="btn red" title="Settings">MENU</button>
+      <button id="btn-info" class="btn round" title="Game rules">i</button>
+      <button id="btn-sound" class="btn round" title="Sound on/off (M)">🔊</button>
+      <div class="chip">1¢</div>
+      <div class="panel clock" id="clock"></div>
+      <div class="panel"><div class="lbl">CREDIT</div><div class="val" id="credit"></div></div>
+      <div class="panel wide"><div class="lbl">WIN</div><div class="val" id="win"></div></div>
+      <button id="btn-bet-down" class="btn blue small" title="Lower bet">BET ▼</button>
+      <div class="panel"><div class="lbl">BET</div><div class="val" id="bet"></div></div>
+      <button id="btn-bet-up" class="btn blue small" title="Raise bet">BET ▲</button>
+      <button id="btn-max" class="btn blue small" title="Max bet">MAX<br>BET</button>
+      <div class="test-col" id="test-col" hidden>
+        <button id="btn-test" class="btn orange small" title="Test mode: start the Buoy Bonus now (B)">TEST BONUS</button>
+        <button id="btn-test-wheel" class="btn orange small" title="Test mode: start the Big Wheel Bonus now (W)">TEST WHEEL</button>
+      </div>
+      <button id="btn-spin" class="btn green" title="Spin (space bar)">PLAY</button>
+    </div>
+  </div>
+
+  <!-- Settings and rules dialogs -->
+  <div id="modal" hidden>
+    <div class="modal-box" id="modal-box"></div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/reels.js"></script>
+  <script src="js/bonus.js"></script>
+  <script src="js/freegames.js"></script>
+  <script src="js/wheel.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

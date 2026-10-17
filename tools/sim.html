@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Lobstermania payout simulator</title>
+<script src="../js/config.js"></script>
+<script src="../js/engine.js"></script>
+<pre id="out">Running…</pre>
+<script>
+  // Open this file in a browser to see the base-game payout for every generosity level.
+  setTimeout(() => {
+    const lines = [];
+    for (const level of [1, 2, 3, 4, 5]) {
+      const s = LM.engine.simulate(level, +(new URLSearchParams(location.search).get("n") || 300000));
+      lines.push(`level ${level}: TOTAL ${(s.totalReturn * 100).toFixed(1)}%  (base ${(s.baseReturn * 100).toFixed(1)}% + buoy ${(s.bonusReturn * 100).toFixed(1)}% + wheel ${(s.wheelReturn * 100).toFixed(1)}%, avg bonus ${s.avgBonus.toFixed(1)}x bet: classic ${s.avgClassic.toFixed(1)}x, free games ${s.avgFree.toFixed(1)}x)  hit rate ${(s.hitRate * 100).toFixed(1)}%  buoy bonus every ${s.bonusEvery.toFixed(0)} spins, wheel every ${s.wheelEvery.toFixed(0)} (avg ${s.avgWheel.toFixed(1)}x)`);
+    }
+    document.getElementById("out").textContent = lines.join("\n");
+  }, 0);
+</script>
