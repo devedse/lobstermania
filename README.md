@@ -29,3 +29,29 @@ That writes `dist/lobstermania.html`, which works on its own on any device.
 - Five generosity levels in Settings
 
 `PLAN.md` has the full background, the rules found online and the build notes.
+
+## Docker
+
+Build and run locally:
+
+```sh
+docker build --build-arg BUILD_VERSION=1.0.0 -t lobstermania:local .
+docker run --rm -p 8080:8080 lobstermania:local
+```
+
+Open `http://localhost:8080`. The container runs as a non-root user and exposes
+its build version at `/version.json` and in the OCI image version label.
+
+The **GitHubActionsBuilds** workflow smoke-tests the container and builds for
+`linux/amd64` and `linux/arm64`. Pushes and manual runs publish to
+`ghcr.io/<owner>/lobstermania`; PRs only build and test, including fork PRs.
+Versions are `1.0.<GitHub workflow run number>` (reruns reuse the same version).
+Every branch gets a sanitized `beta_<branch>` tag, and only the default branch
+updates `latest`. The image name follows the repository, so forks publish to
+their own GHCR namespace.
+
+Manual runs offer a build-cache toggle and a runner choice. GitHub-hosted is
+the default; self-hosted requires a runner labeled `self-hosted`, `proxmox`,
+and `medium`. Publishing uses the workflow's `GITHUB_TOKEN` with package write
+permission; no separate registry secret is required. Existing packages may
+need to grant the repository Actions access in their package settings.
