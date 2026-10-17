@@ -39,8 +39,15 @@ const assert = require("node:assert/strict");
         window.setInterval = (fn, ms, ...a) =>
           interval(fn, Math.min(ms, 20), ...a);
         const timeout = window.setTimeout;
-        window.setTimeout = (fn, ms, ...a) =>
-          timeout(fn, Math.min(ms, 20), ...a);
+        window.rulesFallbackFired = 0;
+        window.setTimeout = (fn, ms, ...a) => {
+          if (ms === 12000)
+            return timeout(() => {
+              window.rulesFallbackFired++;
+              fn(...a);
+            }, 200);
+          return timeout(fn, Math.min(ms, 20), ...a);
+        };
         const now = performance.now.bind(performance);
         performance.now = () => now() * 100;
         const raf = window.requestAnimationFrame.bind(window);
@@ -127,6 +134,14 @@ const assert = require("node:assert/strict");
       assert.equal(result.stats.spins, kind === "resume" ? 2 : 1);
       assert.equal(result.calls.free, kind === "free" ? 1 : 0);
       assert.ok(result.calls.bonus + result.calls.wheel > 0);
+    }
+    if (kind === "free") {
+      await page.waitForTimeout(250);
+      assert.equal(
+        await page.evaluate(() => window.rulesFallbackFired),
+        0,
+        "automatically dismissing rules must cancel the fallback timer",
+      );
     }
     assert.deepEqual(errors, []);
     console.log("PASS", kind);
